@@ -1,3 +1,4 @@
+// controllers/authController.js
 import User from "../model/userModel.js";
 import validator from "validator";
 import bcrypt from "bcryptjs";
@@ -36,7 +37,8 @@ export const registration = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.status(201).json(user);
+    const { password: pass, ...userData } = user._doc;
+    return res.status(201).json(userData);
   } catch (error) {
     console.error("Registration error", error);
     return res.status(500).json({ message: "Registration error" });
@@ -71,7 +73,8 @@ export const login = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.status(200).json(user);
+    const { password: pass, ...userData } = user._doc;
+    return res.status(200).json(userData);
   } catch (error) {
     console.error("Login error", error);
     return res.status(500).json({ message: "Login error" });
@@ -112,7 +115,8 @@ export const googleLogin = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.status(200).json(user);
+    const { password, ...userData } = user._doc;
+    return res.status(200).json(userData);
   } catch (error) {
     console.error("GoogleSignUp error", error);
     return res.status(500).json({ message: "GoogleSignUp error" });
@@ -134,10 +138,10 @@ export const adminLogin = async (req, res) => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: "None",
-        maxAge: 1 * 24 * 60 * 60 * 1000, // 1 din
+        maxAge: 1 * 24 * 60 * 60 * 1000,
       });
 
-      return res.status(200).json(token);
+      return res.status(200).json({ message: "Admin login successful" });
     }
 
     return res.status(400).json({ message: "Invalid Credentials" });
