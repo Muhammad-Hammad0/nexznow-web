@@ -5,7 +5,7 @@ export const authDataContext = createContext();
 
 // Provider component
 export function AuthProvider({ children }) {
-  // ✅ backend ka URL daalo, frontend ka nahi
+  // ✅ yahan backend (Express API) ka Vercel URL daalo
   const [serverUrl] = useState("https://nexznow-web.vercel.app");
 
   return (
