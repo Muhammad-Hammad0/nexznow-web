@@ -19,6 +19,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+
+
+
 app.use(cors({
   origin: ["https://nexzenow.com","https://nexzen-admin.vercel.app/"],
   credentials: true, // allow cookies
@@ -29,6 +32,14 @@ app.use("/api/user", userRoutes);
 app.use("/api/product",productRoutes)
 app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoutes);
+
+
+app.get('/',(req,res)=>{
+  res.send({
+    activeStatus:true,
+    error:false,
+  })
+})
 
 const start = async () => {
   try {
