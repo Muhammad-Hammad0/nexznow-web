@@ -1,0 +1,126 @@
+import React, { useState, useEffect, useContext } from 'react'
+import Nav from '../components/Nav.jsx'
+import Sidebar from '../components/Sidebar.jsx'
+import { SiEbox } from "react-icons/si";
+import axios from 'axios'
+import { authDataContext } from '../context/AuthContext.jsx'
+
+function Order() {
+  let [orders , setOrder] = useState([])
+  let {serverUrl} = useContext(authDataContext)
+
+  const featchALlOrders = async () => {
+    try {
+      const result = await axios.post(serverUrl + '/api/order/list' , {} , {withCredentials:true})
+      setOrder(result.data.reverse())
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+
+const statusHandler = async (e , orderId) => {
+  try {
+    const result = await axios.post(serverUrl + '/api/order/status', {orderId, status:e.target.value}
+      ,{withCredentials:true}
+    )
+    if(result.data){
+      await featchALlOrders()
+    }
+  } catch (error) {
+    console.log(error);
+    
+  }
+}
+
+
+
+
+
+  useEffect(()=>{
+    featchALlOrders()
+  },[])
+
+  return (
+    <div className='w-[98.8vw] min-h-[100vh] bg-gradient-to-l  text-[white]'>
+      <Nav />
+
+      <div className='w-[100%] h-[100%] flex items-center lg:justify-start justify-center'>
+        <Sidebar />
+        <div className='lg:w-[85%] md:w-[70%] h-[100%] lg:ml-[330px] md:ml-[250px] mt-[70px]
+        flex flex-col gap-[30px] overflow-x-hidden py-[50px] pl-[100px]'>
+          
+          <div className='w-[400px] h-[50px] text-[28px] md:text-[40px] mb-[20px] text-black'>
+            All Orders Lists
+          </div>
+
+          {orders.map((order,index)=> (
+            <div key={index} className='w-[90%] h-[40%] rounded-xl flex lg:items-center
+            items-start justify-between flex-col lg:flex-row p-[10px] md:px-[20px] gap-[20px] border border-black'>
+              
+              <SiEbox className='w-[60px] h-[60px] text-[black] p-[5px] rounded-lg bg-[white]'/>
+
+              <div>
+                <div className='flex items-start justify-center flex-col gap-[5px] text-[16px] text-[black]'>
+                  {order.items.map((item, index) => {
+                    if(index === order.items.length - 1){
+                      return (
+                        <p key={index}>
+                          {item.name.toUpperCase()}   *   {item.quantity} <span>{item.size}</span>
+                        </p>
+                      )
+                    } else {
+                      return (
+                        <p key={index}>
+                          {item.name.toUpperCase()}   *   {item.quantity} <span>{item.size}</span>,
+                        </p>
+                      )
+                    }
+                  })}
+                </div>
+
+                  <div className='text-[15px] text-black'>
+                    <p>
+                      {order.address.firstName +"" + order.address.lastName}
+                    </p>
+                     <p>
+                      {order.address.street +", "}
+                    </p>
+                     <p>
+                      {order.address.city +", " + order.address.state + ", " + order.address.pinCode}
+                    </p>
+                     <p>
+                      {order.address.phone +", "}
+                    </p>
+                  </div>
+
+              </div>
+                  <div className='text-[15px] text-black'>
+                    <p> Items : {order.items.length} </p>
+                     <p> Method : {order.paymentMethod} </p>
+                      <p> Payment : {order.payment ? 'done' : 'Pending'} </p>
+                       <p> Date : {new Date(order.date).toLocaleDateString()} </p>
+                       <p className='text-[20px]'>RS {order.amount}</p>
+                  </div>
+
+                  <select value={order.status} className='px-[5px] py-[10px] text-black
+                  rounded-lg border-[1px] border-[black]' onChange={(e)=>statusHandler(e , order._id)}>
+                    <option value="Order Placed">Order Placed</option>
+                    <option value="Packing">Packing</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Out For Delievry">Out For Delievry</option>
+                    <option value="Delieverd">Delieverd</option>
+                  </select>
+
+
+
+            </div>
+          ))}
+
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default Order
