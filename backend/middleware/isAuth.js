@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 export const isAuth = (req, res, next) => {
   try {
     const token = req.cookies?.token;
+
     if (!token) {
       return res.status(401).json({ message: "No token provided" });
     }
@@ -15,7 +16,7 @@ export const isAuth = (req, res, next) => {
     req.userId = decoded.userId;
     next();
   } catch (error) {
-    console.log(error);
+    console.log("Auth middleware error:", error.message);
     return res.status(401).json({ message: "Authentication failed" });
   }
 };

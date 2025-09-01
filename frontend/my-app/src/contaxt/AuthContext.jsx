@@ -5,7 +5,8 @@ export const authDataContext = createContext();
 
 // Provider component
 export function AuthProvider({ children }) {
-  const [serverUrl] = useState("https://nexznow-web.vercel.app/");
+  // ✅ backend ka URL daalo, frontend ka nahi
+  const [serverUrl] = useState("https://nexzen-backend-production-3f38.up.railway.app");
 
   return (
     <authDataContext.Provider value={{ serverUrl }}>

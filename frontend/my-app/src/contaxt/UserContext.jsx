@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-
 import axios from "axios";
 import { authDataContext } from "./AuthContext";
 
@@ -13,15 +12,19 @@ function UserContext({ children }) {
   const getCurrentUser = async () => {
     try {
       setLoading(true);
+
       const result = await axios.get(
         `${serverUrl}/api/user/getcurrentuser`,
-        { withCredentials: true }
+        {
+          withCredentials: true, // ✅ cookie bhejne ke liye zaroori
+        }
       );
+
       setUserData(result.data);
       console.log("Current user:", result.data);
     } catch (error) {
       setUserData(null);
-      console.error("Error fetching current user:", error);
+      console.error("Error fetching current user:", error.response?.data || error.message);
     } finally {
       setLoading(false);
     }
@@ -35,7 +38,7 @@ function UserContext({ children }) {
     userData,
     setUserData,
     getCurrentUser,
-    loading
+    loading,
   };
 
   return (
