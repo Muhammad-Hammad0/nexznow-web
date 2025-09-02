@@ -19,6 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// ✅ CORS setup
 app.use(
   cors({
     origin: ["https://nexzenow.com", "https://nexzen-admin.vercel.app"],
@@ -26,6 +27,7 @@ app.use(
   })
 );
 
+// Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/product", productRoutes);
