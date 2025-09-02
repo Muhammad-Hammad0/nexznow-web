@@ -7,7 +7,7 @@ export const authDataContext = createContext();
 // Provider component
 export function AuthProvider({ children }) {
   // ✅ Correct backend URL
-  const [serverUrl] = useState("https://nexzen-backend-production-0308.up.railway.app");
+  const [serverUrl] = useState("https://nexznow-web.vercel.app");
 
   // ✅ Setup axios instance (withCredentials ensures cookies like token are sent)
   const api = axios.create({
