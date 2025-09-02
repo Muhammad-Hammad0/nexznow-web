@@ -3,12 +3,11 @@ import validator from "validator";
 import bcrypt from "bcryptjs";
 import { genToken, genToken1 } from "../config/token.js";
 
-// ✅ common cookie options for auth
+// ✅ cookie options
 const cookieOptions = {
   httpOnly: true,
-  secure: true, // Railway is HTTPS
+  secure: true, // Railway uses HTTPS
   sameSite: "None",
-  domain: ".up.railway.app", // ✅ force cookie on backend domain
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 };
 
@@ -38,7 +37,6 @@ export const registration = async (req, res) => {
     const user = await User.create({ name, email, password: hashPassword });
     const token = await genToken(user._id);
 
-    // ✅ set cookie
     res.cookie("token", token, cookieOptions);
 
     const { password: pass, ...userData } = user._doc;
@@ -69,8 +67,6 @@ export const login = async (req, res) => {
     }
 
     const token = await genToken(user._id);
-
-    // ✅ set cookie
     res.cookie("token", token, cookieOptions);
 
     const { password: pass, ...userData } = user._doc;
@@ -88,7 +84,6 @@ export const logout = async (req, res) => {
       httpOnly: true,
       secure: true,
       sameSite: "None",
-      domain: ".up.railway.app",
     });
     return res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
@@ -108,8 +103,6 @@ export const googleLogin = async (req, res) => {
     }
 
     const token = await genToken(user._id);
-
-    // ✅ set cookie
     res.cookie("token", token, cookieOptions);
 
     const { password, ...userData } = user._doc;
@@ -135,7 +128,6 @@ export const adminLogin = async (req, res) => {
         httpOnly: true,
         secure: true,
         sameSite: "None",
-        domain: ".up.railway.app",
         maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
       });
 
@@ -146,5 +138,29 @@ export const adminLogin = async (req, res) => {
   } catch (error) {
     console.error("AdminLogin error", error);
     return res.status(500).json({ message: "AdminLogin error" });
+  }
+};
+
+// ==================== Get Current User ====================
+export const getCurrentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error("GetCurrentUser error", error);
+    return res.status(500).json({ message: "GetCurrentUser error" });
+  }
+};
+
+// ==================== Get Admin ====================
+export const getAdmin = async (req, res) => {
+  try {
+    return res.status(200).json({ admin: true });
+  } catch (error) {
+    console.error("GetAdmin error", error);
+    return res.status(500).json({ message: "GetAdmin error" });
   }
 };

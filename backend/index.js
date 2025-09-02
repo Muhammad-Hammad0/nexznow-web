@@ -12,9 +12,9 @@ import orderRoutes from "./routes/orderRoutes.js";
 dotenv.config();
 
 const PORT = process.env.PORT || 6000;
-
 const app = express();
 
+// Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -22,7 +22,11 @@ app.use(cookieParser());
 // ✅ CORS setup
 app.use(
   cors({
-    origin: ["https://nexzenow.com", "https://nexzen-admin.vercel.app"],
+    origin: [
+      "https://nexzenow.com",
+      "https://nexzen-admin.vercel.app",
+      "http://localhost:5173", // for local dev
+    ],
     credentials: true,
   })
 );
@@ -41,14 +45,15 @@ app.get("/", (req, res) => {
   });
 });
 
+// Start server
 const start = async () => {
   try {
     await connectDb();
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
   } catch (err) {
-    console.error("Failed to start server", err);
+    console.error("❌ Failed to start server", err);
     process.exit(1);
   }
 };
