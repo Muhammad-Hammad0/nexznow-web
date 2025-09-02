@@ -1,8 +1,16 @@
-// controllers/authController.js
 import User from "../model/userModel.js";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import { genToken, genToken1 } from "../config/token.js";
+
+// ✅ common cookie options for auth
+const cookieOptions = {
+  httpOnly: true,
+  secure: true, // Railway is HTTPS
+  sameSite: "None",
+  domain: ".up.railway.app", // ✅ force cookie on backend domain
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+};
 
 // ==================== Registration ====================
 export const registration = async (req, res) => {
@@ -30,12 +38,8 @@ export const registration = async (req, res) => {
     const user = await User.create({ name, email, password: hashPassword });
     const token = await genToken(user._id);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "None",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    // ✅ set cookie
+    res.cookie("token", token, cookieOptions);
 
     const { password: pass, ...userData } = user._doc;
     return res.status(201).json(userData);
@@ -66,12 +70,8 @@ export const login = async (req, res) => {
 
     const token = await genToken(user._id);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "None",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    // ✅ set cookie
+    res.cookie("token", token, cookieOptions);
 
     const { password: pass, ...userData } = user._doc;
     return res.status(200).json(userData);
@@ -86,8 +86,9 @@ export const logout = async (req, res) => {
   try {
     res.clearCookie("token", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "None",
+      domain: ".up.railway.app",
     });
     return res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
@@ -108,12 +109,8 @@ export const googleLogin = async (req, res) => {
 
     const token = await genToken(user._id);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "None",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    // ✅ set cookie
+    res.cookie("token", token, cookieOptions);
 
     const { password, ...userData } = user._doc;
     return res.status(200).json(userData);
@@ -136,9 +133,10 @@ export const adminLogin = async (req, res) => {
 
       res.cookie("adminToken", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
         sameSite: "None",
-        maxAge: 1 * 24 * 60 * 60 * 1000,
+        domain: ".up.railway.app",
+        maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
       });
 
       return res.status(200).json({ message: "Admin login successful" });
