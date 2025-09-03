@@ -1,5 +1,3 @@
-// server.js (Full Backend Setup)
-
 // ================== Imports ==================
 import express from "express";
 import dotenv from "dotenv";
@@ -28,13 +26,18 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: [
-      "https://nexzenow.com",          // main frontend
-      "https://nexznow-adminpanel.vercel.app", // admin panel
-      "http://localhost:5173",        // local dev
+      "https://nexzenow.com",                 // main site
+      "https://nexznow-adminpanel.vercel.app", // ✅ correct admin panel
+      "http://localhost:5173",                // local dev
     ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
+// ✅ Explicitly handle preflight requests
+app.options("*", cors());
 
 // ================== Routes ==================
 app.use("/api/auth", authRoutes);
