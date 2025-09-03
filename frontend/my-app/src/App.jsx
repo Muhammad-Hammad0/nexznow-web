@@ -9,7 +9,7 @@ import About from './pages/About.jsx';
 import Collection from './pages/Collection.jsx';
 import Contact from './pages/Contact.jsx';
 import Product from './pages/Product.jsx';
-import WhatsAppButton from './component/WhatsAppButton.jsx';
+import WhatsAppButton from './component/WhatsappButton.jsx';
 import ProductDetail from './pages/ProductDetail.jsx';
 import Cart from './pages/Cart.jsx';
 import PlaceOrder from './pages/PlaceOrder.jsx';
