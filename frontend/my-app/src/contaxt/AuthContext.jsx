@@ -5,7 +5,7 @@ export const authDataContext = createContext();
 
 // Provider component
 export function AuthProvider({ children }) {
-  const [serverUrl] = useState("http://localhost:8000");
+  const [serverUrl] = useState("https://nexzen-backend-production-3f38.up.railway.app");
 
   return (
     <authDataContext.Provider value={{ serverUrl }}>
