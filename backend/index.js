@@ -29,7 +29,7 @@ app.use(
   cors({
     origin: [
       "https://nexzenow.com",          // main frontend
-      "https://nexzen-admin.vercel.app", // admin panel
+      "https://nexznow-adminpanel.vercel.app", // admin panel
       "http://localhost:5173",        // local dev
     ],
     credentials: true,
