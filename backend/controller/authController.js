@@ -40,7 +40,7 @@ export const registration = async (req, res) => {
     res.cookie("token", token, cookieOptions);
 
     const { password: pass, ...userData } = user._doc;
-    return res.status(201).json(userData);
+    return res.status(201).json({ ...userData, token }); // ✅ send token also
   } catch (error) {
     console.error("Registration error", error);
     return res.status(500).json({ message: "Registration error" });
@@ -70,7 +70,7 @@ export const login = async (req, res) => {
     res.cookie("token", token, cookieOptions);
 
     const { password: pass, ...userData } = user._doc;
-    return res.status(200).json(userData);
+    return res.status(200).json({ ...userData, token }); // ✅ send token also
   } catch (error) {
     console.error("Login error", error);
     return res.status(500).json({ message: "Login error" });
@@ -106,7 +106,7 @@ export const googleLogin = async (req, res) => {
     res.cookie("token", token, cookieOptions);
 
     const { password, ...userData } = user._doc;
-    return res.status(200).json(userData);
+    return res.status(200).json({ ...userData, token }); // ✅ send token also
   } catch (error) {
     console.error("GoogleSignUp error", error);
     return res.status(500).json({ message: "GoogleSignUp error" });
@@ -131,7 +131,7 @@ export const adminLogin = async (req, res) => {
         maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
       });
 
-      return res.status(200).json({ message: "Admin login successful" });
+      return res.status(200).json({ message: "Admin login successful", token });
     }
 
     return res.status(400).json({ message: "Invalid Credentials" });
