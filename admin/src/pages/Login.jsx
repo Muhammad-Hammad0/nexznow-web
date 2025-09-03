@@ -37,13 +37,13 @@ function Login() {
       {/* Header */}
       <div className='w-full h-[80px] flex items-center justify-start px-[30px] gap-[10px] cursor-pointer'>
         <img className='w-[40px]' src={logo} alt="logo" />
-        <h1 className='text-[22px] font-sans'>NumSports</h1>
+        <h1 className='text-[22px] font-sans'>Nexzen</h1>
       </div>
 
       {/* Intro */}
       <div className='w-full flex flex-col items-center gap-[10px] pt-10'>
         <span className='text-lg font-semibold'>Login Page</span>
-        <span className='text-[16px]'>Welcome to NumSports, Apply to Admin Login</span>
+        <span className='text-[16px]'>Welcome to Nexzen, Apply to Admin Login</span>
       </div>
 
       {/* Form */}

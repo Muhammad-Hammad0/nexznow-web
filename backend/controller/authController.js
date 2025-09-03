@@ -3,12 +3,14 @@ import validator from "validator";
 import bcrypt from "bcryptjs";
 import { genToken, genToken1 } from "../config/token.js";
 
-// ✅ cookie options
+const isProduction = process.env.NODE_ENV === "production";
+
+// ✅ Reusable cookie options
 const cookieOptions = {
   httpOnly: true,
-  secure: true, // Railway uses HTTPS
-  sameSite: "None",
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  secure: isProduction, // dev => false, prod => true
+  sameSite: isProduction ? "None" : "Lax",
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 din
 };
 
 // ==================== Registration ====================
@@ -39,8 +41,7 @@ export const registration = async (req, res) => {
 
     res.cookie("token", token, cookieOptions);
 
-    const { password: pass, ...userData } = user._doc;
-    return res.status(201).json({ ...userData, token }); // ✅ send token also
+    return res.status(201).json(user);
   } catch (error) {
     console.error("Registration error", error);
     return res.status(500).json({ message: "Registration error" });
@@ -67,10 +68,10 @@ export const login = async (req, res) => {
     }
 
     const token = await genToken(user._id);
+
     res.cookie("token", token, cookieOptions);
 
-    const { password: pass, ...userData } = user._doc;
-    return res.status(200).json({ ...userData, token }); // ✅ send token also
+    return res.status(200).json(user);
   } catch (error) {
     console.error("Login error", error);
     return res.status(500).json({ message: "Login error" });
@@ -81,9 +82,8 @@ export const login = async (req, res) => {
 export const logout = async (req, res) => {
   try {
     res.clearCookie("token", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "None",
+      ...cookieOptions,
+      maxAge: 0, // 👈 clear karne ke liye zaroori
     });
     return res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
@@ -103,10 +103,10 @@ export const googleLogin = async (req, res) => {
     }
 
     const token = await genToken(user._id);
+
     res.cookie("token", token, cookieOptions);
 
-    const { password, ...userData } = user._doc;
-    return res.status(200).json({ ...userData, token }); // ✅ send token also
+    return res.status(200).json(user);
   } catch (error) {
     console.error("GoogleSignUp error", error);
     return res.status(500).json({ message: "GoogleSignUp error" });
@@ -125,42 +125,16 @@ export const adminLogin = async (req, res) => {
       const token = await genToken1(email);
 
       res.cookie("adminToken", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "None",
-        maxAge: 1 * 24 * 60 * 60 * 1000, // 1 day
+        ...cookieOptions,
+        maxAge: 1 * 24 * 60 * 60 * 1000, // 1 din
       });
 
-      return res.status(200).json({ message: "Admin login successful", token });
+      return res.status(200).json(token);
     }
 
     return res.status(400).json({ message: "Invalid Credentials" });
   } catch (error) {
     console.error("AdminLogin error", error);
     return res.status(500).json({ message: "AdminLogin error" });
-  }
-};
-
-// ==================== Get Current User ====================
-export const getCurrentUser = async (req, res) => {
-  try {
-    const user = await User.findById(req.userId).select("-password");
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    return res.status(200).json(user);
-  } catch (error) {
-    console.error("GetCurrentUser error", error);
-    return res.status(500).json({ message: "GetCurrentUser error" });
-  }
-};
-
-// ==================== Get Admin ====================
-export const getAdmin = async (req, res) => {
-  try {
-    return res.status(200).json({ admin: true });
-  } catch (error) {
-    console.error("GetAdmin error", error);
-    return res.status(500).json({ message: "GetAdmin error" });
   }
 };
