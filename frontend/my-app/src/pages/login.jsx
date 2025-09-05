@@ -48,10 +48,10 @@ function Login() {
   };
 
   return (
-    <div className='w-[100vw] h-[100vh] bg-gradient-to-l from-[#141414] to-[#0c2025] text-white flex flex-col items-center justify-start'>
+    <div className='w-[100vw] h-[100vh] bg-gradient-to-l  text-white flex flex-col items-center justify-start'>
       <div className='w-full h-[80px] flex items-center justify-start px-[30px] gap-[10px] cursor-pointer' onClick={() => navigate("/")}>
         <img className='w-[70px]' src={Logo} alt="logo" />
-        <h1 className='text-[22px] font-sans'>Nexzem</h1>
+      
       </div>
 
       <div className='w-full h-screen flex items-center justify-start flex-col gap-[10px] pt-10' >
