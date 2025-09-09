@@ -5,12 +5,11 @@ import { genToken, genToken1 } from "../config/token.js";
 
 const isProduction = process.env.NODE_ENV === "production";
 
-// ✅ Reusable cookie options
 const cookieOptions = {
   httpOnly: true,
-  secure: isProduction, // dev => false, prod => true
+  secure: isProduction,
   sameSite: isProduction ? "None" : "Lax",
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 din
+  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
 };
 
 // ==================== Registration ====================
@@ -41,7 +40,11 @@ export const registration = async (req, res) => {
 
     res.cookie("token", token, cookieOptions);
 
-    return res.status(201).json(user);
+    return res.status(201).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    });
   } catch (error) {
     console.error("Registration error", error);
     return res.status(500).json({ message: "Registration error" });
@@ -68,10 +71,13 @@ export const login = async (req, res) => {
     }
 
     const token = await genToken(user._id);
-
     res.cookie("token", token, cookieOptions);
 
-    return res.status(200).json(user);
+    return res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    });
   } catch (error) {
     console.error("Login error", error);
     return res.status(500).json({ message: "Login error" });
@@ -81,10 +87,7 @@ export const login = async (req, res) => {
 // ==================== Logout ====================
 export const logout = async (req, res) => {
   try {
-    res.clearCookie("token", {
-      ...cookieOptions,
-      maxAge: 0, // 👈 clear karne ke liye zaroori
-    });
+    res.clearCookie("token", cookieOptions);
     return res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     console.error("Logout error", error);
@@ -103,10 +106,13 @@ export const googleLogin = async (req, res) => {
     }
 
     const token = await genToken(user._id);
-
     res.cookie("token", token, cookieOptions);
 
-    return res.status(200).json(user);
+    return res.status(200).json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+    });
   } catch (error) {
     console.error("GoogleSignUp error", error);
     return res.status(500).json({ message: "GoogleSignUp error" });
@@ -125,11 +131,13 @@ export const adminLogin = async (req, res) => {
       const token = await genToken1(email);
 
       res.cookie("adminToken", token, {
-        ...cookieOptions,
-        maxAge: 1 * 24 * 60 * 60 * 1000, // 1 din
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "None" : "Lax",
+        maxAge: 1 * 24 * 60 * 60 * 1000,
       });
 
-      return res.status(200).json(token);
+      return res.status(200).json({ message: "Admin login successful" });
     }
 
     return res.status(400).json({ message: "Invalid Credentials" });

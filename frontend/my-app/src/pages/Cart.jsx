@@ -31,11 +31,17 @@ function Cart() {
   return (
     <div className='w-[98.9vw] min-h-[100vh] px-[20px] overflow-hidden bg-white'>
       
+      {/* Title */}
       <div className='h-[8%] w-full text-center mt-[80px]'>
         <Title text1={'Your'} text2={'Cart'} />
       </div>
 
+      {/* Cart Items */}
       <div className='w-full mt-6 flex flex-col gap-6 md:gap-8'>
+        {cartData.length === 0 && (
+          <p className='text-center text-gray-600 text-lg mt-10'>Your cart is empty</p>
+        )}
+
         {cartData.map((item, index) => {
           const productData = Array.isArray(products)
             ? products.find((p) => p._id === item._id)
@@ -61,26 +67,30 @@ function Cart() {
                   </p>
 
                   <div className='flex items-center gap-6 flex-wrap'>
+                    {/* Price */}
                     <p className='text-[18px] text-green-700 font-medium'>
                       {currency}{productData.price}
                     </p>
 
+                    {/* Size */}
                     <p className='w-[40px] h-[40px] text-[16px] text-black bg-white rounded-md flex items-center justify-center border border-gray-300'>
                       {item.size}
                     </p>
 
+                    {/* Quantity Input */}
                     <div className='flex items-center justify-center'>
                       <input
                         type="number"
                         min={0}
-                        defaultValue={item.quantity}
+                        value={item.quantity}
                         className='w-[60px] h-[40px] px-2 py-1 text-black text-[16px] font-semibold 
                                    text-center bg-white border border-gray-300 rounded-md'
-                        onChange={(e) =>
-                          e.target.value === '' || e.target.value === '0'
-                            ? null
-                            : updateQuantity(item._id, item.size, Number(e.target.value))
-                        }
+                        onChange={(e) => {
+                          const value = Number(e.target.value);
+                          if (value >= 0) {
+                            updateQuantity(item._id, item.size, value);
+                          }
+                        }}
                       />
                     </div>
                   </div>
@@ -97,27 +107,22 @@ function Cart() {
         })}
       </div>
 
-      {/* Cart Total & Button */}
-      <div className='flex justify-start items-end mt-10 mb-6 sm:mb-20 pb-[100px]'>
-        <div className='w-full sm:w-[450px]'>
-          <CartTotal />
-          <button
-            className='text-[18px] hover:bg-slate-800 cursor-pointer bg-slate-600
-              py-[10px] px-[50px] rounded-2xl text-white flex items-center justify-center gap-[20px]
-              border border-gray-800 ml-[30px] mt-[20px]'
-            onClick={() => {
-              if (cartData.length > 0) {
-                navigate("/placeorder");
-              } else {
-                alert("Your Cart Is Empty!") 
-              }
-            }}
-          >
-            Proceed To CheckOut
-          </button>
+      {/* Cart Total & Checkout */}
+      {cartData.length > 0 && (
+        <div className='flex justify-start items-end mt-10 mb-6 sm:mb-20 pb-[100px]'>
+          <div className='w-full sm:w-[450px]'>
+            <CartTotal />
+            <button
+              className='text-[18px] hover:bg-slate-800 cursor-pointer bg-slate-600
+                py-[10px] px-[50px] rounded-2xl text-white flex items-center justify-center gap-[20px]
+                border border-gray-800 ml-[30px] mt-[20px]'
+              onClick={() => navigate("/placeorder")}
+            >
+              Proceed To CheckOut
+            </button>
+          </div>
         </div>
-      </div>
-
+      )}
     </div>
   );
 }
