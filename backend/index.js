@@ -25,6 +25,7 @@ app.use(
     origin: [
       "https://nexzenow.com",
       "https://nexzen-admin.vercel.app",
+      "https://nexznow-adminpanel.vercel.app",
       "http://localhost:5173",
     ],
     credentials: true,
@@ -38,14 +39,20 @@ app.use("/api/product", productRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoutes);
 
+// ✅ Default route (for quick health check)
+app.get("/", (req, res) => {
+  res.send("Backend is running ✅");
+});
+
+// ✅ Start server
 const start = async () => {
   try {
     await connectDb();
-    app.listen(PORT, () => {
-      console.log(`✅ Server running on http://localhost:${PORT}`);
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`✅ Server running on http://0.0.0.0:${PORT}`);
     });
   } catch (err) {
-    console.error("Failed to start server", err);
+    console.error("❌ Failed to start server", err);
     process.exit(1);
   }
 };
