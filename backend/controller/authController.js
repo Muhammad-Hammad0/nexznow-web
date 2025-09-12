@@ -10,6 +10,7 @@ const cookieOptions = {
   secure: isProduction,
   sameSite: isProduction ? "None" : "Lax",
   maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  domain: "srv1000765.hstgr.cloud", // ✅ Add this for cross-domain cookie
 };
 
 // ==================== Registration ====================
@@ -87,7 +88,7 @@ export const login = async (req, res) => {
 // ==================== Logout ====================
 export const logout = async (req, res) => {
   try {
-    res.clearCookie("token", cookieOptions);
+    res.clearCookie("token", { ...cookieOptions });
     return res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     console.error("Logout error", error);
@@ -135,6 +136,7 @@ export const adminLogin = async (req, res) => {
         secure: isProduction,
         sameSite: isProduction ? "None" : "Lax",
         maxAge: 1 * 24 * 60 * 60 * 1000,
+        domain: "srv1000765.hstgr.cloud", // ✅ Added here
       });
 
       return res.status(200).json({ message: "Admin login successful" });
