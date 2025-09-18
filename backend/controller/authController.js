@@ -3,16 +3,6 @@ import validator from "validator";
 import bcrypt from "bcryptjs";
 import { genToken, genToken1 } from "../config/token.js";
 
-const isProduction = process.env.NODE_ENV === "production";
-
-const cookieOptions = {
-  httpOnly: true,
-  secure: isProduction,
-  sameSite: isProduction ? "None" : "Lax",
-  maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  domain: "srv1000765.hstgr.cloud", // ✅ Add this for cross-domain cookie
-};
-
 // ==================== Registration ====================
 export const registration = async (req, res) => {
   try {
@@ -39,13 +29,14 @@ export const registration = async (req, res) => {
     const user = await User.create({ name, email, password: hashPassword });
     const token = await genToken(user._id);
 
-    res.cookie("token", token, cookieOptions);
-
-    return res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
+    return res.status(201).json(user);
   } catch (error) {
     console.error("Registration error", error);
     return res.status(500).json({ message: "Registration error" });
@@ -72,13 +63,15 @@ export const login = async (req, res) => {
     }
 
     const token = await genToken(user._id);
-    res.cookie("token", token, cookieOptions);
 
-    return res.status(200).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
+    return res.status(200).json(user);
   } catch (error) {
     console.error("Login error", error);
     return res.status(500).json({ message: "Login error" });
@@ -88,7 +81,11 @@ export const login = async (req, res) => {
 // ==================== Logout ====================
 export const logout = async (req, res) => {
   try {
-    res.clearCookie("token", { ...cookieOptions });
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+    });
     return res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     console.error("Logout error", error);
@@ -107,13 +104,15 @@ export const googleLogin = async (req, res) => {
     }
 
     const token = await genToken(user._id);
-    res.cookie("token", token, cookieOptions);
 
-    return res.status(200).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
+    return res.status(200).json(user);
   } catch (error) {
     console.error("GoogleSignUp error", error);
     return res.status(500).json({ message: "GoogleSignUp error" });
@@ -123,6 +122,8 @@ export const googleLogin = async (req, res) => {
 // ==================== Admin Login ====================
 export const adminLogin = async (req, res) => {
   try {
+    console.log("📩 Admin Login Request", req.body);
+
     let { email, password } = req.body;
 
     if (
@@ -133,13 +134,12 @@ export const adminLogin = async (req, res) => {
 
       res.cookie("adminToken", token, {
         httpOnly: true,
-        secure: isProduction,
-        sameSite: isProduction ? "None" : "Lax",
-        maxAge: 1 * 24 * 60 * 60 * 1000,
-        domain: "srv1000765.hstgr.cloud", // ✅ Added here
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+        maxAge: 24 * 60 * 60 * 1000,
       });
 
-      return res.status(200).json({ message: "Admin login successful" });
+      return res.status(200).json({ token });
     }
 
     return res.status(400).json({ message: "Invalid Credentials" });

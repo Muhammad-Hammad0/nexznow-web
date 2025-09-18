@@ -5,8 +5,7 @@ export const authDataContext = createContext();
 
 // Provider component
 export function AuthProvider({ children }) {
-  // ✅ Live backend URL (no slash at end)
-  const [serverUrl] = useState("https://srv1000765.hstgr.cloud");
+  const [serverUrl] = useState("http://localhost:8000");
 
   return (
     <authDataContext.Provider value={{ serverUrl }}>

@@ -15,7 +15,7 @@ import { shopDataContext } from '../contaxt/ShopContext.jsx';
 import { authDataContext } from '../contaxt/AuthContext.jsx';
 
 function Navigation() {
-  const { getCurrentUser, userData } = useContext(userDataContext);
+  const { getCurrentUser, userData, setUserData } = useContext(userDataContext);
   const { serverUrl } = useContext(authDataContext);
   const { showSearch, setShowSearch, search, setSearch ,getCartCount } = useContext(shopDataContext);
   const [showProfile, setShowProfile] = useState(false);
@@ -25,7 +25,13 @@ function Navigation() {
     try {
       const result = await axios.get(serverUrl + "/api/auth/logout", { withCredentials: true });
       console.log(result.data);
-      await getCurrentUser();
+
+      // Clear context immediately
+      setUserData(null);
+
+      // Optionally refresh current user
+      // await getCurrentUser();
+
       navigate("/login");
     } catch (error) {
       console.log(error);
@@ -38,7 +44,7 @@ function Navigation() {
       {/* Left Section: Logo */}
       <div className="flex items-center gap-[10px] flex-none">
         <img src={logo} alt="NumSports Logo" className="w-[100px] h-[100px]" />
-           </div>
+      </div>
 
       {/* Center Section: Navigation Menu */}
       <div className="custom-nav flex-1 hidden md:flex justify-center">
@@ -132,7 +138,7 @@ function Navigation() {
               </li>
             )}
             <li className="px-4 py-2 hover:bg-gray-800 cursor-pointer" 
-            onClick={() => {
+              onClick={() => {
                 navigate("/order");
                 setShowProfile(false);
               }}

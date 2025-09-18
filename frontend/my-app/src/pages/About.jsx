@@ -60,16 +60,18 @@ We are committed to delivering products that meet the highest standards of durab
           </div>
 
           <div className='lg:w-[33%] w-[90%] h-[250px] border border-gray-300 flex items-center
-          justify-center gap-[20px] flex-col px-[40px] py-[10px] bg-white text-black shadow-md'>
+          justify-center gap-[40px] flex-col px-[40px] py-[10px] bg-white text-black shadow-md'>
             <b className='text-[20px] font-semibold text-green-600'>Convenience</b>
-            <p>Shopping with NEXZEN is designed to be simple, fast, and stress-free.</p>
+            <p>Shopping with NEXZEN is designed to be simple, fast, and stress-free.
+              to ensure your shopping experience is smooth, reliable, and stress-free.
+            </p>
           </div>
 
           <div className='lg:w-[33%] w-[90%] h-[250px] border border-gray-300 flex items-center
           justify-center gap-[20px] flex-col px-[40px] py-[10px] bg-white text-black shadow-md'>
             <b className='text-[20px] font-semibold text-green-600'>Exceptional Customer Service</b>
             <p>At NEXZEN, we don’t just sell products—we build lasting relationships.
-Our dedicated support team is here to ensure your shopping experience is smooth, reliable, and stress-free.</p>
+Our dedicated support team is here</p>
           </div>
         </div>
       </div>
