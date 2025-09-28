@@ -1,11 +1,10 @@
-jsx
 import React, { createContext } from 'react';
 
 export const authDataContext = createContext();
 
 function AuthContext({ children }) {
-  // Production backend link
-  let serverUrl = "https://api.nexzenow.com"; // No slash at the end
+  // ✅ Always use your domain with HTTPS
+  let serverUrl = "https://api.nexzenow.com";
 
   let value = {
     serverUrl
