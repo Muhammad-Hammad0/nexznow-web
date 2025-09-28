@@ -1,9 +1,11 @@
+jsx
 import React, { createContext } from 'react';
 
 export const authDataContext = createContext();
 
 function AuthContext({ children }) {
-  let serverUrl = "http://91.108.121.240:8000/api"; // No slash at the end
+  // Production backend link
+  let serverUrl = "https://api.nexzenow.com"; // No slash at the end
 
   let value = {
     serverUrl
@@ -17,3 +19,4 @@ function AuthContext({ children }) {
 }
 
 export default AuthContext;
+
